@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "OpenOCD",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "${workspaceFolder}/scripts/openocd.sh"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "openocd",
+                "pattern": [
+                    {
+                        "regexp": "Error: .*",
+                        "file": 0,
+                        "line": 0,
+                        "message": 0
+                    }
+                ],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".+",
+                    "endsPattern": "Listening on port"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "group": "none"
+        },
+        {
+            "label": "Stop OpenOCD",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "echo shutdown > /dev/tcp/127.0.0.1/4444 || true"
+            ],
+            "isBackground": false,
+            "problemMatcher": []
+        }
+    ]
+}
