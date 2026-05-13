@@ -5,7 +5,6 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/chip-lighting-app.elf",
-            "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,

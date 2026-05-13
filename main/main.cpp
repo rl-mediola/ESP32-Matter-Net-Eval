@@ -39,6 +39,8 @@
 #include <platform/ESP32/ESP32Utils.h>
 #include <setup_payload/OnboardingCodesUtil.h>
 
+#include "mediola/ble.hpp"
+
 #if CONFIG_ENABLE_ESP_INSIGHTS_SYSTEM_STATS
 #include <tracing/esp32_trace/insights_sys_stats.h>
 #define START_TIMEOUT_MS 60000
@@ -85,43 +87,44 @@ static const char TAG[] = "light-app";
 static AppDeviceCallbacks EchoCallbacks;
 static AppDeviceCallbacksDelegate sAppDeviceCallbacksDelegate;
 
-namespace {
+namespace
+{
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
-DeviceLayer::ESP32FactoryDataProvider sFactoryDataProvider;
+    DeviceLayer::ESP32FactoryDataProvider sFactoryDataProvider;
 #endif // CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 
 #if CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
-DeviceLayer::ESP32DeviceInfoProvider gExampleDeviceInfoProvider;
+    DeviceLayer::ESP32DeviceInfoProvider gExampleDeviceInfoProvider;
 #else
-DeviceLayer::DeviceInfoProviderImpl gExampleDeviceInfoProvider;
+    DeviceLayer::DeviceInfoProviderImpl gExampleDeviceInfoProvider;
 #endif // CONFIG_ENABLE_ESP32_DEVICE_INFO_PROVIDER
 
 #if CONFIG_SEC_CERT_DAC_PROVIDER
-DeviceLayer::ESP32SecureCertDACProvider gSecureCertDACProvider;
+    DeviceLayer::ESP32SecureCertDACProvider gSecureCertDACProvider;
 #endif // CONFIG_SEC_CERT_DAC_PROVIDER
 
 #ifdef CONFIG_ENABLE_SET_CERT_DECLARATION_API
-extern const uint8_t cd_start[] asm("_binary_certification_declaration_der_start");
-extern const uint8_t cd_end[] asm("_binary_certification_declaration_der_end");
-ByteSpan cdSpan(cd_start, static_cast<size_t>(cd_end - cd_start));
+    extern const uint8_t cd_start[] asm("_binary_certification_declaration_der_start");
+    extern const uint8_t cd_end[] asm("_binary_certification_declaration_der_end");
+    ByteSpan cdSpan(cd_start, static_cast<size_t>(cd_end - cd_start));
 #endif // CONFIG_ENABLE_SET_CERT_DECLARATION_API
 
-chip::Credentials::DeviceAttestationCredentialsProvider * get_dac_provider(void)
-{
+    chip::Credentials::DeviceAttestationCredentialsProvider *get_dac_provider(void)
+    {
 #if CONFIG_SEC_CERT_DAC_PROVIDER
 #ifdef CONFIG_ENABLE_SET_CERT_DECLARATION_API
-    gSecureCertDACProvider.SetCertificationDeclaration(cdSpan);
+        gSecureCertDACProvider.SetCertificationDeclaration(cdSpan);
 #endif // CONFIG_ENABLE_SET_CERT_DECLARATION_API
-    return &gSecureCertDACProvider;
+        return &gSecureCertDACProvider;
 #elif CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
 #ifdef CONFIG_ENABLE_SET_CERT_DECLARATION_API
-    sFactoryDataProvider.SetCertificationDeclaration(cdSpan);
+        sFactoryDataProvider.SetCertificationDeclaration(cdSpan);
 #endif // CONFIG_ENABLE_SET_CERT_DECLARATION_API
-    return &sFactoryDataProvider;
+        return &sFactoryDataProvider;
 #else  // EXAMPLE_DAC_PROVIDER
-    return chip::Credentials::Examples::GetExampleDACProvider();
+        return chip::Credentials::Examples::GetExampleDACProvider();
 #endif
-}
+    }
 
 } // namespace
 
@@ -194,13 +197,15 @@ extern "C" void app_main()
 
     DeviceLayer::SetDeviceInfoProvider(&gExampleDeviceInfoProvider);
 
-    CHIPDeviceManager & deviceMgr = CHIPDeviceManager::GetInstance();
-    CHIP_ERROR error              = deviceMgr.Init(&EchoCallbacks);
+    CHIPDeviceManager &deviceMgr = CHIPDeviceManager::GetInstance();
+    CHIP_ERROR error = deviceMgr.Init(&EchoCallbacks);
     if (error != CHIP_NO_ERROR)
     {
         ESP_LOGE(TAG, "device.Init() failed: %s", ErrorStr(error));
         return;
     }
+
+    mediola::add_ble_service();
 
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
     SetCommissionableDataProvider(&sFactoryDataProvider);
@@ -218,4 +223,8 @@ extern "C" void app_main()
     {
         ESP_LOGE(TAG, "GetAppTask().StartAppTask() failed : %s", ErrorStr(error));
     }
+
+    // Doesn't work?
+    chip::DeviceLayer::PlatformMgr().ScheduleWork([](intptr_t)
+                                                  { mediola::add_ble_adv(); });
 }

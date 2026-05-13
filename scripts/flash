@@ -1,7 +1,7 @@
 port=/dev/ttyACM0
 
 # Not working because of --no-stub option?
-# idf.py erase-flash -p $port
+# idf.py erase-flash --port $port
 
-python -m esptool erase_flash -p $port
-idf.py flash -p $port
+python -m esptool --port $port erase_flash
+idf.py flash --port $port
