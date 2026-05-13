@@ -29,13 +29,13 @@ set(PRIV_INCLUDE_DIRS_LIST
     "${LIGHT_COMMON_DIR}/include" "${CMAKE_CURRENT_LIST_DIR}/include")
 set(SRC_DIRS_LIST
     "${CMAKE_CURRENT_LIST_DIR}"
+    "${CMAKE_SOURCE_DIR}/matter/platform/esp32/common"
     "${CMAKE_CURRENT_LIST_DIR}/include/mediola"
     "${APP_COMMON_GEN_DIR}/attributes"
     "${APP_COMMON_GEN_DIR}"
     "${LIGHT_COMMON_DIR}/src"
     "${CHIP_ROOT}/examples/providers"
     "${CHIP_ROOT}/examples/platform/esp32/ota"
-    "${CHIP_ROOT}/examples/platform/esp32/common"
     "${CHIP_ROOT}/examples/platform/esp32/shell_extension")
 
 if(CONFIG_ENABLE_PW_RPC)
