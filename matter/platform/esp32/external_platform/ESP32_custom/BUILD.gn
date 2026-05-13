@@ -35,6 +35,7 @@ declare_args() {
 
   # Define the default endpoint id for the generic Thread network commissioning instance
   chip_device_config_thread_network_endpoint_id = 0
+  chip_use_transitional_device_instance_info_provider = true
 }
 
 buildconfig_header("custom_buildconfig") {
@@ -52,21 +53,22 @@ buildconfig_header("custom_buildconfig") {
     "CHIP_ENABLE_ADDITIONAL_DATA_ADVERTISING=false",
     "CHIP_DEVICE_CONFIG_RUN_AS_ROOT=false",
     "CHIP_DEVICE_LAYER_TARGET_ESP32=1",
-    "CHIP_DEVICE_LAYER_TARGET=ESP32_custom",
+    "CHIP_DEVICE_LAYER_TARGET=ESP32",
     "CHIP_USE_TRANSITIONAL_COMMISSIONABLE_DATA_PROVIDER=1",
+    "CHIP_USE_TRANSITIONAL_DEVICE_INSTANCE_INFO_PROVIDER=${chip_use_transitional_device_instance_info_provider}",
     "CHIP_DEVICE_CONFIG_ENABLE_CHIPOBLE=${chip_enable_chipoble}",
     "BLE_PLATFORM_CONFIG_INCLUDE=<external_platform/ESP32_custom/BlePlatformConfig.h>",
     "CHIP_DEVICE_PLATFORM_CONFIG_INCLUDE=<external_platform/ESP32_custom/CHIPDevicePlatformConfig.h>",
     "CHIP_PLATFORM_CONFIG_INCLUDE=<external_platform/ESP32_custom/CHIPPlatformConfig.h>",
     "INET_CONFIG_INCLUDE=<external_platform/ESP32_custom/InetPlatformConfig.h>",
     "SYSTEM_PLATFORM_CONFIG_INCLUDE=<external_platform/ESP32_custom/SystemPlatformConfig.h>",
-    "EXTERNAL_CONFIGURATIONMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ConfigurationManagerImpl.h>",
-    "EXTERNAL_CHIPDEVICEPLATFORMEVENT_HEADER=<external_platform/ESP32_custom/CHIPDevicePlatformEvent.h>",
-    "EXTERNAL_CONNECTIVITYMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ConnectivityManagerImpl.h>",
-    "EXTERNAL_BLEMANAGERIMPL_HEADER=<external_platform/ESP32_custom/BLEManagerImpl.h>",
-    "EXTERNAL_KEYVALUESTOREMANAGERIMPL_HEADER=<external_platform/ESP32_custom/KeyValueStoreManagerImpl.h>",
-    "EXTERNAL_PLATFORMMANAGERIMPL_HEADER=<external_platform/ESP32_custom/PlatformManagerImpl.h>",
-    "EXTERNAL_THREADSTACKMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ThreadStackManagerImpl.h>",
+    # "EXTERNAL_CONFIGURATIONMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ConfigurationManagerImpl.h>",
+    # "EXTERNAL_CHIPDEVICEPLATFORMEVENT_HEADER=<external_platform/ESP32_custom/CHIPDevicePlatformEvent.h>",
+    # "EXTERNAL_CONNECTIVITYMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ConnectivityManagerImpl.h>",
+    # "EXTERNAL_BLEMANAGERIMPL_HEADER=<external_platform/ESP32_custom/BLEManagerImpl.h>",
+    # "EXTERNAL_KEYVALUESTOREMANAGERIMPL_HEADER=<external_platform/ESP32_custom/KeyValueStoreManagerImpl.h>",
+    # "EXTERNAL_PLATFORMMANAGERIMPL_HEADER=<external_platform/ESP32_custom/PlatformManagerImpl.h>",
+    # "EXTERNAL_THREADSTACKMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ThreadStackManagerImpl.h>",
     "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
     "CHIP_DEVICE_CONFIG_MAX_DISCOVERED_IP_ADDRESSES=${chip_max_discovered_ip_addresses}",
   ]
