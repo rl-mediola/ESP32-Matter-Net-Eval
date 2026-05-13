@@ -32,6 +32,9 @@ declare_args() {
   chip_enable_ble_controller = false
   chip_enable_route_hook = false
   chip_memory_alloc_mode = "default"
+
+  # Define the default endpoint id for the generic Thread network commissioning instance
+  chip_device_config_thread_network_endpoint_id = 0
 }
 
 buildconfig_header("custom_buildconfig") {
@@ -63,6 +66,7 @@ buildconfig_header("custom_buildconfig") {
     "EXTERNAL_BLEMANAGERIMPL_HEADER=<external_platform/ESP32_custom/BLEManagerImpl.h>",
     "EXTERNAL_KEYVALUESTOREMANAGERIMPL_HEADER=<external_platform/ESP32_custom/KeyValueStoreManagerImpl.h>",
     "EXTERNAL_PLATFORMMANAGERIMPL_HEADER=<external_platform/ESP32_custom/PlatformManagerImpl.h>",
+    "EXTERNAL_THREADSTACKMANAGERIMPL_HEADER=<external_platform/ESP32_custom/ThreadStackManagerImpl.h>",
     "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
     "CHIP_DEVICE_CONFIG_MAX_DISCOVERED_IP_ADDRESSES=${chip_max_discovered_ip_addresses}",
   ]
@@ -159,15 +163,36 @@ static_library("ESP32_custom") {
       "ConnectivityManagerImpl_WiFi.cpp",
       "NetworkCommissioningDriver.cpp",
       "NetworkCommissioningDriver.h",
-      "route_hook/ESP32RouteHook.c",
-      "route_hook/ESP32RouteHook.h",
-      "route_hook/ESP32RouteTable.c",
-      "route_hook/ESP32RouteTable.h",
     ]
+  }
+
+  if (chip_mdns == "platform") {
+    sources += [ "DnssdImpl.cpp" ]
+  }
+
+  if (chip_enable_ethernet) {
+    sources += [
+      "ConnectivityManagerImpl_Ethernet.cpp",
+      "NetworkCommissioningDriver_Ethernet.cpp",
+    ]
+  }
+
+  if (chip_enable_ethernet || chip_enable_wifi) {
     if (chip_mdns == "platform") {
       sources += [
-        "DnssdImpl.cpp",
-        "DnssdImpl.h",
+        "ESP32DnssdImpl.cpp",
+        "ESP32DnssdImpl.h",
+      ]
+    }
+    if (chip_mdns == "minimal") {
+      sources += [ "ESP32EndpointQueueFilter.h" ]
+    }
+    if (chip_enable_route_hook) {
+      sources += [
+        "route_hook/ESP32RouteHook.c",
+        "route_hook/ESP32RouteHook.h",
+        "route_hook/ESP32RouteTable.c",
+        "route_hook/ESP32RouteTable.h",
       ]
     }
   }
@@ -184,5 +209,32 @@ static_library("ESP32_custom") {
       "ESP32DeviceInfoProvider.cpp",
       "ESP32DeviceInfoProvider.h",
     ]
+  }
+
+  if (chip_enable_openthread) {
+    sources += [
+      "//third_party/connectedhomeip/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.cpp",
+      "//third_party/connectedhomeip/src/platform/OpenThread/GenericNetworkCommissioningThreadDriver.h",
+      "//third_party/connectedhomeip/src/platform/OpenThread/OpenThreadUtils.cpp",
+      "OpenthreadLauncher.cpp",
+      "OpenthreadLauncher.h",
+      "ThreadStackManagerImpl.cpp",
+      "ThreadStackManagerImpl.h",
+    ]
+    deps += [ "${chip_root}/src/app:app_config" ]
+    if (chip_mdns == "platform") {
+      sources += [
+        "//third_party/connectedhomeip/src/platform/OpenThread/OpenThreadDnssdImpl.cpp",
+        "//third_party/connectedhomeip/src/platform/OpenThread/OpenThreadDnssdImpl.h",
+      ]
+    }
+    if (chip_openthread_border_router) {
+      deps += [ "${chip_root}/src/app/common:ids" ]
+      sources += [
+        "${chip_root}/src/platform/OpenThread/GenericThreadBorderRouterDelegate.cpp",
+        "${chip_root}/src/platform/OpenThread/GenericThreadBorderRouterDelegate.h",
+      ]
+    }
+    configs -= [ "${chip_root}/build/config/compiler:warnings_default" ]
   }
 }
