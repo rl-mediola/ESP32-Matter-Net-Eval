@@ -42,8 +42,11 @@ buildconfig_header("custom_buildconfig") {
   header = "CHIPDeviceBuildConfig.h"
   header_dir = "platform"
 
+  chip_device_config_enable_wpa =
+      chip_enable_wifi && chip_device_platform != "darwin"
+
   defines = [
-    "CHIP_DEVICE_CONFIG_ENABLE_WPA=false",
+    "CHIP_DEVICE_CONFIG_ENABLE_WPA=${chip_device_config_enable_wpa}",
     "CHIP_ENABLE_OPENTHREAD=${chip_enable_openthread}",
     "CHIP_DEVICE_CONFIG_THREAD_FTD=${chip_openthread_ftd}",
     "OPENTHREAD_CONFIG_ENABLE_TOBLE=false",
@@ -72,6 +75,11 @@ buildconfig_header("custom_buildconfig") {
     "CHIP_CONFIG_SOFTWARE_VERSION_NUMBER=${chip_config_software_version_number}",
     "CHIP_DEVICE_CONFIG_MAX_DISCOVERED_IP_ADDRESSES=${chip_max_discovered_ip_addresses}",
   ]
+
+  if (chip_enable_openthread && chip_device_platform != "linux" &&
+      chip_device_platform != "tizen" && chip_device_platform != "webos") {
+    defines += [ "CHIP_DEVICE_CONFIG_THREAD_NETWORK_ENDPOINT_ID=${chip_device_config_thread_network_endpoint_id}" ]
+  }
 
   if (chip_enable_ota_requestor) {
     defines += [ "CHIP_DEVICE_CONFIG_ENABLE_OTA_REQUESTOR=1" ]
