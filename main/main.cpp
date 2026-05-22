@@ -40,6 +40,7 @@
 #include <setup_payload/OnboardingCodesUtil.h>
 
 #include "mediola/ble.hpp"
+#include "mediola/debug.hpp"
 
 #if CONFIG_ENABLE_ESP_INSIGHTS_SYSTEM_STATS
 #include <tracing/esp32_trace/insights_sys_stats.h>
@@ -205,6 +206,7 @@ extern "C" void app_main()
         return;
     }
 
+    mediola::debug_init();
     mediola::add_ble_service();
 
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER
