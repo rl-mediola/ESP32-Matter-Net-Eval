@@ -70,7 +70,7 @@ void CommonDeviceCallbacks::DeviceEventCallback(const ChipDeviceEvent * event, i
 
     case DeviceEventType::kCommissioningComplete: {
         ESP_LOGI(TAG, "Commissioning complete");
-        Esp32AppServer::DeInitBLEIfCommissioned();
+        // Esp32AppServer::DeInitBLEIfCommissioned();
     }
     break;
 

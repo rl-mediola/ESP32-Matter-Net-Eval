@@ -255,5 +255,5 @@ void Esp32AppServer::Init(AppDelegate * sAppDelegate)
         chip::app::DnssdServer::Instance().StartServer();
     }
 #endif
-    DeInitBLEIfCommissioned();
+    // DeInitBLEIfCommissioned();
 }
