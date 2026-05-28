@@ -121,7 +121,7 @@ SemaphoreHandle_t semaphoreHandle = NULL;
 
 // LE Random Device Address
 // (see Bluetooth® Core Specification 4.2 Vol 6, Part B, Section 1.3.2.1 "Static device address")
-uint8_t own_addr_type = BLE_OWN_ADDR_RANDOM;
+uint8_t own_addr_type = BLE_OWN_ADDR_PUBLIC;
 
 } // unnamed namespace
 
