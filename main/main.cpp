@@ -40,6 +40,7 @@
 #include <setup_payload/OnboardingCodesUtil.h>
 
 #include "mediola/ble.hpp"
+#include "mediola/button.hpp"
 #include "mediola/debug.hpp"
 
 #if CONFIG_ENABLE_ESP_INSIGHTS_SYSTEM_STATS
@@ -206,6 +207,7 @@ extern "C" void app_main()
     }
 
     mediola::debug_init();
+    mediola::button_init();
     mediola::add_ble_service();
 
 #if CONFIG_ENABLE_ESP32_FACTORY_DATA_PROVIDER

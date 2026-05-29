@@ -1,10 +1,11 @@
-# ESP32-Matter-Net-Eval
+# ESP32-Matter-Net-Eval (for ESP32-C5 Devkit)
 
 Modified Matter ESP32 Lighting Example.
 Changes:
 - external CHIP platform
 - CHIP BLE advertising will not be turned off
 - an additional BLE GATT service is running
+- Interrupt on Boot button (GPIO 28)
 
 ## Wi-Fi
 Define Wi-Fi configs.
