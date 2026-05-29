@@ -3,3 +3,4 @@
 /sdkconfig.old
 main/insights_auth_key.txt
 /managed_components
+/.vscode/

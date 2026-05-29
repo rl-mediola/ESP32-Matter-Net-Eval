@@ -1,5 +1,7 @@
 port=/dev/ttyACM0
 
+set -e
+
 # Not working because of --no-stub option?
 # idf.py erase-flash --port $port
 
